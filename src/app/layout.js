@@ -13,11 +13,12 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Alby Snack",
-  icons: {
-    icon: "/images/icon.png",
-    shortcut: "/images/icon.png",
-    apple: "/images/icon.png",
-  },
+   icon: [
+      { url: "/images/favicon.png" },         // default
+      { url: "/images/favicon.png", rel: "shortcut icon" },
+      { url: "/images/favicon.png", rel: "apple-touch-icon" }
+    ],
+
   description: "Cemilan pedas kekinian favorit kamu",
   keywords: "snack, cemilan, pedas, kekinian, alby snack",
   authors: [

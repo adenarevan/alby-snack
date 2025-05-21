@@ -8,21 +8,21 @@ const snacks = [
   {
     name: "Cimol",
     desc: "Cemilan gurih dan kenyal, cocok buat santai!",
-    price: "Rp5.000",
+    price: "Rp5.000 - 12.000",
     image: "/images/cimol.png",
     waMessage: "Halo kak! Aku mau pesan Cimol."
   },
   {
     name: "Cimol Keju",
     desc: "Cimol dengan sensasi lelehan keju creamy yang gurih!",
-    price: "Rp6.000",
+    price: "Rp12.000",
     image: "/images/cimolkeju.png",
     waMessage: "Halo kak! Aku mau pesan Cimol Keju."
   },
   {
     name: "Makaroni",
     desc: "Renyer pedas yang crunchy banget!",
-    price: "Rp4.000",
+    price: "Rp5.000",
     image: "/images/makaroni.png",
     waMessage: "Halo kak! Aku mau pesan Makaroni."
   },
@@ -35,7 +35,7 @@ const snacks = [
   }
 ];
 
-const phone = "081296023400";
+const phone = "6281296023400";
 const mapsLink = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.193222126297!2d106.72738731100698!3d-6.215007893738111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f13670f79235%3A0x1a6cda36e850dcd3!2sQPMJ%2BV2%2C%20Joglo%2C%20Kembangan%2C%20West%20Jakarta%20City%2C%20Jakarta%20Capital%20Region!5e0!3m2!1sen!2sid!4v1716205510000!5m2!1sen!2sid";
 
 const testimonials = [
@@ -53,6 +53,24 @@ const testimonials = [
     name: "Yudha P.",
     review: "Harga murah rasa mewah. Repeat order terus!",
     rating: 5
+  },
+    {
+    name: "Arie U.",
+    review: "Cimol Keju nya enak bgt bikin nagih!",
+    rating: 5
+  },
+
+      {
+    name: "M igo",
+    review: "Untuk sekelas gerobakan rasanya juara sih",
+    rating: 5
+  },
+
+        {
+    name: "Alex",
+    review: "Boleh untuk di coba, enak dan pedasnya pas",
+    rating: 4
+
   }
 ];
 
@@ -107,7 +125,7 @@ export default function Home() {
                 alt={snack.name}
                 width={500}
                 height={300}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 objec-cover"
               />
               <div className="p-4 flex flex-col justify-between flex-grow">
                 <div>
