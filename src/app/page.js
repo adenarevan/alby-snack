@@ -1,8 +1,7 @@
 'use client'
 
-import Image from "next/image";
-import { motion } from "framer-motion";
-import Head from "next/head";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const snacks = [
   {
@@ -10,28 +9,35 @@ const snacks = [
     desc: "Cemilan gurih dan kenyal, cocok buat santai!",
     price: "Rp5.000 - 12.000",
     image: "/images/cimol.png",
-    waMessage: "Halo kak! Aku mau pesan Cimol."
+    waMessage: "Halo kak! Aku mau pesan Cimol.",
+    category: "Signature",
+    isPopular: true
   },
   {
     name: "Cimol Keju",
     desc: "Cimol dengan sensasi lelehan keju creamy yang gurih!",
     price: "Rp12.000",
     image: "/images/cimolkeju.png",
-    waMessage: "Halo kak! Aku mau pesan Cimol Keju."
+    waMessage: "Halo kak! Aku mau pesan Cimol Keju.",
+    category: "Premium",
+    isNew: true
   },
   {
     name: "Makaroni",
     desc: "Renyer pedas yang crunchy banget!",
     price: "Rp5.000",
     image: "/images/makaroni.png",
-    waMessage: "Halo kak! Aku mau pesan Makaroni."
+    waMessage: "Halo kak! Aku mau pesan Makaroni.",
+    category: "Classic"
   },
   {
     name: "Basreng",
     desc: "Bakso goreng khas Alby Snack, pedasnya nampol!",
     price: "Rp5.000",
     image: "/images/basreng.png",
-    waMessage: "Halo kak! Aku mau pesan Basreng."
+    waMessage: "Halo kak! Aku mau pesan Basreng.",
+    category: "Signature",
+    isPopular: true
   }
 ];
 
@@ -39,158 +45,484 @@ const phone = "6281296023400";
 const mapsLink = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.193222126297!2d106.72738731100698!3d-6.215007893738111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f13670f79235%3A0x1a6cda36e850dcd3!2sQPMJ%2BV2%2C%20Joglo%2C%20Kembangan%2C%20West%20Jakarta%20City%2C%20Jakarta%20Capital%20Region!5e0!3m2!1sen!2sid!4v1716205510000!5m2!1sen!2sid";
 
 const testimonials = [
-  {
-    name: "Andi W.",
-    review: "Cimolnya enak banget, beneran nagih!",
-    rating: 5
-  },
-  {
-    name: "Rina M.",
-    review: "Basreng pedesnya mantap, cocok buat temen kerja.",
-    rating: 4
-  },
-  {
-    name: "Yudha P.",
-    review: "Harga murah rasa mewah. Repeat order terus!",
-    rating: 5
-  },
-    {
-    name: "Arie U.",
-    review: "Cimol Keju nya enak bgt bikin nagih!",
-    rating: 5
-  },
-
-      {
-    name: "M igo",
-    review: "Untuk sekelas gerobakan rasanya juara sih",
-    rating: 5
-  },
-
-        {
-    name: "Alex",
-    review: "Boleh untuk di coba, enak dan pedasnya pas",
-    rating: 4
-
-  }
+  { name: "Andi W.", review: "Cimolnya enak banget, beneran nagih!", rating: 5, avatar: "👨" },
+  { name: "Rina M.", review: "Basreng pedesnya mantap, cocok buat temen kerja.", rating: 4, avatar: "👩" },
+  { name: "Yudha P.", review: "Harga murah rasa mewah. Repeat order terus!", rating: 5, avatar: "👨‍💼" },
+  { name: "Arie U.", review: "Cimol Keju nya enak bgt bikin nagih!", rating: 5, avatar: "👩‍💻" },
+  { name: "M igo", review: "Untuk sekelas gerobakan rasanya juara sih", rating: 5, avatar: "👨‍🎓" },
+  { name: "Alex", review: "Boleh untuk di coba, enak dan pedasnya pas", rating: 4, avatar: "👨‍🚀" }
 ];
 
-export default function Home() {
+const FloatingElement = ({ children, delay = 0 }) => (
+  <motion.div
+    animate={{
+      y: [0, -10, 0],
+      rotate: [0, 1, 0, -1, 0]
+    }}
+    transition={{
+      duration: 4,
+      repeat: Infinity,
+      delay: delay
+    }}
+  >
+    {children}
+  </motion.div>
+);
+
+const GlassCard = ({ children, className = "" }) => (
+  <div className={`backdrop-blur-xl bg-white/20 border border-white/30 rounded-3xl shadow-2xl ${className}`}>
+    {children}
+  </div>
+);
+
+const ParallaxSection = ({ children, className = "" }) => {
+  const [scrollY, setScrollY] = useState(0);
+  
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-gradient-to-br from-yellow-100 via-red-100 to-pink-100 animate-pulse-slow">
-      <Head>
-        <title>Alby Snack | Cemilan Pedas Kekinian</title>
-        <meta name="description" content="Snack pedas seperti cimol, makaroni, basreng, dan lainnya! Bisa pesan via WA." />
-        <meta property="og:image" content="/images/og-cover.png" />
-      </Head>
+    <div 
+      className={className}
+      style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+    >
+      {children}
+    </div>
+  );
+};
 
-      <a href={`https://wa.me/${phone}`} target="_blank" className="fixed bottom-4 right-4 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg text-xl">
-        💬
-      </a>
+export default function Home() {
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [isVisible, setIsVisible] = useState({});
+  
+  const categories = ['All', 'Signature', 'Premium', 'Classic'];
+  
+  const filteredSnacks = activeFilter === 'All' 
+    ? snacks 
+    : snacks.filter(snack => snack.category === activeFilter);
 
-      <main className="flex-grow p-6">
-        <header className="text-center mb-10">
-          <motion.h1
-            className="text-6xl font-extrabold text-red-700 drop-shadow-md mb-3 animate-bounce"
-            initial={{ opacity: 0, y: -60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            Alby Snack 🌶️🍟
-          </motion.h1>
-          <motion.p
-            className="text-xl text-gray-800 font-medium"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            Cemilan pedas kekinian favorit kamu — murah, gurih, nagih!
-          </motion.p>
-        </header>
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(prev => ({
+            ...prev,
+            [entry.target.id]: entry.isIntersecting
+          }));
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-        <motion.div className="w-full bg-gradient-to-r from-yellow-300 via-red-300 to-yellow-300 text-red-800 text-center py-2 font-semibold rounded-xl mb-8 shadow-md animate-pulse">
-          🔥 PROMO SPESIAL: Beli 2 Cimol Gratis Makaroni - Hari Ini Saja! 🔥
-        </motion.div>
+    document.querySelectorAll('[id]').forEach((el) => {
+      observer.observe(el);
+    });
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {snacks.map((snack, idx) => (
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900/90 via-pink-800/90 to-red-900/90 relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(255,107,107,0.3)_0%,transparent_50%)] animate-pulse"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,165,0,0.3)_0%,transparent_50%)] animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_80%,rgba(255,20,147,0.3)_0%,transparent_50%)] animate-pulse" style={{animationDelay: '2s'}}></div>
+      </div>
+
+      {/* Floating Decorative Elements */}
+      <div className="fixed inset-0 z-10 pointer-events-none">
+        <FloatingElement delay={0}>
+          <div className="absolute top-20 left-20 text-6xl opacity-20">🌶️</div>
+        </FloatingElement>
+        <FloatingElement delay={1}>
+          <div className="absolute top-40 right-20 text-4xl opacity-20">🔥</div>
+        </FloatingElement>
+        <FloatingElement delay={2}>
+          <div className="absolute bottom-40 left-40 text-5xl opacity-20">🍟</div>
+        </FloatingElement>
+        <FloatingElement delay={3}>
+          <div className="absolute bottom-20 right-40 text-4xl opacity-20">⭐</div>
+        </FloatingElement>
+      </div>
+
+      {/* WhatsApp Float Button */}
+      <motion.a
+        href={`https://wa.me/${phone}`}
+        target="_blank"
+        className="fixed bottom-8 right-8 z-50 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white p-5 rounded-full shadow-2xl text-2xl group"
+        whileHover={{ scale: 1.1, rotate: 5 }}
+        whileTap={{ scale: 0.9 }}
+        animate={{
+          boxShadow: [
+            "0 0 20px rgba(34, 197, 94, 0.5)",
+            "0 0 40px rgba(34, 197, 94, 0.8)",
+            "0 0 20px rgba(34, 197, 94, 0.5)"
+          ]
+        }}
+        transition={{ duration: 2, repeat: Infinity }}
+      >
+        <span className="group-hover:animate-bounce">💬</span>
+      </motion.a>
+
+      <main className="relative z-20">
+        {/* Hero Section */}
+        <section id="hero" className="min-h-screen flex items-center justify-center px-6 py-20">
+          <div className="text-center max-w-6xl mx-auto">
             <motion.div
-              key={idx}
-              className="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col hover:scale-105 transition-transform duration-300 border-4 border-yellow-200"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
+              transition={{ duration: 1 }}
             >
-              <Image
-                src={snack.image}
-                alt={snack.name}
-                width={500}
-                height={300}
-                className="w-full h-48 objec-cover"
-              />
-              <div className="p-4 flex flex-col justify-between flex-grow">
-                <div>
-                  <h2 className="text-2xl font-bold text-orange-700">
-                    {snack.name}
-                  </h2>
-                  <p className="text-sm text-gray-600 mt-1">{snack.desc}</p>
+              <motion.h1
+                className="text-8xl md:text-9xl font-black bg-gradient-to-r from-yellow-300 via-red-400 to-pink-400 bg-clip-text text-transparent mb-6 drop-shadow-2xl"
+                animate={{
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+                style={{ backgroundSize: '200% 200%' }}
+              >
+                ALBY SNACK
+              </motion.h1>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="mb-8"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
+                Cemilan Pedas <span className="text-yellow-300">Kekinian</span> 🌶️
+              </h2>
+              <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                Rasakan sensasi pedas yang bikin ketagihan! Murah, gurih, dan pasti nagih banget!
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.8 }}
+              className="space-y-4"
+            >
+              <GlassCard className="inline-block px-8 py-4 mb-6">
+                <div className="flex items-center gap-4 text-yellow-300">
+                  <span className="text-3xl animate-bounce">🔥</span>
+                  <span className="text-2xl font-bold">PROMO SPESIAL LANGSUNG DIOUTLET!!!!!</span>
+                  <span className="text-3xl animate-bounce">🔥</span>
                 </div>
-                <div className="mt-4">
-                  <p className="text-red-500 text-lg font-bold">
-                    {snack.price}
-                  </p>
-                  <a
-                    href={`https://wa.me/${phone}?text=${encodeURIComponent(snack.waMessage)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full shadow-sm"
-                  >
-                    💬 Pesan via WhatsApp
-                  </a>
-                </div>
+                <p className="text-white text-lg mt-2">Beli 2 Cimol Gratis Makaroni</p>
+              </GlassCard>
+              
+              <div>
+                <motion.a
+                  href="#menu"
+                  className="inline-block bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-4 px-12 rounded-full text-xl shadow-2xl mr-4 mb-4"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  🍽️ Lihat Menu
+                </motion.a>
+                <motion.a
+                  href={`https://wa.me/${phone}`}
+                  target="_blank"
+                  className="inline-block bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-12 rounded-full text-xl shadow-2xl mb-4"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  💬 Pesan Sekarang
+                </motion.a>
               </div>
             </motion.div>
-          ))}
-        </section>
-
-        <section className="bg-white rounded-xl shadow-md p-6 mb-12 border border-yellow-300">
-          <h3 className="text-2xl font-bold text-orange-700 mb-4 text-center">⭐ Testimoni Pelanggan</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {testimonials.map((item, idx) => (
-              <div key={idx} className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl shadow">
-                <p className="text-sm text-gray-700 italic">“{item.review}”</p>
-                <p className="mt-2 text-yellow-600 font-bold">{item.name}</p>
-                <p className="text-yellow-500">{"⭐".repeat(item.rating)}</p>
-              </div>
-            ))}
           </div>
         </section>
 
-        <section className="bg-white rounded-xl shadow-md p-6 mb-12 border border-red-200">
-          <h3 className="text-2xl font-bold text-red-600 mb-4 text-center">📍 Lokasi & Kontak</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-gray-700 text-sm mb-2">
-                Lokasi kami mudah ditemukan dan dekat dari mana saja. Kunjungi langsung atau hubungi kami:
+        {/* Menu Section */}
+        <section id="menu" className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={isVisible.menu ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-6xl font-black text-white mb-6 drop-shadow-lg">
+                Menu <span className="text-yellow-300">Favorit</span> 🔥
+              </h2>
+              <p className="text-xl text-gray-200 mb-12 max-w-3xl mx-auto">
+                Pilihan cemilan pedas terbaik yang bikin lidah bergoyang!
               </p>
-              <ul className="text-sm text-gray-800 space-y-1">
-                <li><strong>📍 Alamat:</strong> JL Haji Sa'abah, No. 80, Joglo, RT.3/RW.1, Meruya Sel., Kec. Kembangan Kota Jakarta Barat</li>
-                <li><strong>📞 Telp/WA:</strong> <a href={`https://wa.me/${phone}`} className="text-green-600 underline font-medium">{phone}</a></li>
-                <li><strong>🕒 Jam Operasional:</strong> 10.00 – 22.00 WIB</li>
-              </ul>
+              
+              {/* Category Filter */}
+              <div className="flex flex-wrap justify-center gap-4 mb-12">
+                {categories.map((category) => (
+                  <motion.button
+                    key={category}
+                    onClick={() => setActiveFilter(category)}
+                    className={`px-8 py-3 rounded-full font-bold text-lg transition-all ${
+                      activeFilter === category
+                        ? 'bg-white text-red-600 shadow-xl'
+                        : 'bg-white/20 text-white hover:bg-white/30'
+                    }`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {category}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <AnimatePresence mode="wait">
+                {filteredSnacks.map((snack, idx) => (
+                  <motion.div
+                    key={snack.name}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, y: -50 }}
+                    transition={{ duration: 0.5, delay: idx * 0.1 }}
+                    whileHover={{ y: -10, scale: 1.02 }}
+                    className="group relative"
+                  >
+                    <GlassCard className="p-6 h-full flex flex-col overflow-hidden relative">
+                      {/* Badges */}
+                      <div className="absolute top-4 left-4 z-10 space-y-2">
+                        {snack.isPopular && (
+                          <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                            🔥 POPULER
+                          </span>
+                        )}
+                        {snack.isNew && (
+                          <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                            ✨ BARU
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Image Placeholder with gradient overlay */}
+                      <div className="relative h-48 mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                        <div className="absolute inset-0 bg-black/10"></div>
+                        <span className="text-6xl filter drop-shadow-lg">
+                          {snack.name.includes('Cimol') ? '🥟' : 
+                           snack.name.includes('Makaroni') ? '🍝' : '🥓'}
+                        </span>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                      </div>
+
+                      <div className="flex-grow">
+                        <h3 className="text-2xl font-black text-white mb-2 group-hover:text-yellow-300 transition-colors">
+                          {snack.name}
+                        </h3>
+                        <p className="text-gray-200 text-sm mb-4 leading-relaxed">
+                          {snack.desc}
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="text-3xl font-black text-yellow-300 drop-shadow-lg">
+                          {snack.price}
+                        </div>
+                        <motion.a
+                          href={`https://wa.me/${phone}?text=${encodeURIComponent(snack.waMessage)}`}
+                          target="_blank"
+                          className="block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl text-center shadow-xl"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          💬 Pesan Sekarang
+                        </motion.a>
+                      </div>
+                    </GlassCard>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
-            <iframe
-              src={mapsLink}
-              className="w-full h-64 rounded-xl border-2 border-orange-300 shadow-md"
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section id="testimonials" className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={isVisible.testimonials ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-6xl font-black text-white mb-6 drop-shadow-lg">
+                Kata <span className="text-yellow-300">Pelanggan</span> ⭐
+              </h2>
+              <p className="text-xl text-gray-200 max-w-3xl mx-auto">
+                Ribuan pelanggan sudah merasakan kenikmatannya!
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {testimonials.map((testimonial, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+                  animate={isVisible.testimonials ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.8, delay: idx * 0.1 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                >
+                  <GlassCard className="p-6 h-full">
+                    <div className="flex items-center mb-4">
+                      <span className="text-4xl mr-4">{testimonial.avatar}</span>
+                      <div>
+                        <h4 className="font-bold text-white text-lg">{testimonial.name}</h4>
+                        <div className="text-yellow-300 text-xl">
+                          {"⭐".repeat(testimonial.rating)}
+                        </div>
+                      </div>
+                    </div>
+                    <blockquote className="text-gray-200 italic text-lg leading-relaxed">
+                      "{testimonial.review}"
+                    </blockquote>
+                  </GlassCard>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact & Location Section */}
+        <section id="contact" className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={isVisible.contact ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-6xl font-black text-white mb-6 drop-shadow-lg">
+                Kunjungi <span className="text-yellow-300">Kami</span> 📍
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={isVisible.contact ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <GlassCard className="p-8 h-full">
+                  <h3 className="text-3xl font-bold text-white mb-8 text-center">Informasi Kontak</h3>
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <span className="text-3xl">📍</span>
+                      <div>
+                        <h4 className="font-bold text-yellow-300 text-xl mb-2">Alamat</h4>
+                        <p className="text-gray-200 leading-relaxed">
+                          JL Haji Sa'abah, No. 80, Joglo, RT.3/RW.1, Meruya Sel., Kec. Kembangan Kota Jakarta Barat
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-4">
+                      <span className="text-3xl">📞</span>
+                      <div>
+                        <h4 className="font-bold text-yellow-300 text-xl mb-2">WhatsApp</h4>
+                        <motion.a
+                          href={`https://wa.me/${phone}`}
+                          className="text-green-400 text-xl font-bold hover:text-green-300 transition-colors"
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          {phone}
+                        </motion.a>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-4">
+                      <span className="text-3xl">🕒</span>
+                      <div>
+                        <h4 className="font-bold text-yellow-300 text-xl mb-2">Jam Operasional</h4>
+                        <p className="text-gray-200 text-lg">10.00 – 22.00 WIB</p>
+                        <p className="text-green-400 font-bold">Buka Setiap Hari!</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <span className="text-3xl">📱</span>
+                      <div>
+                        <h4 className="font-bold text-yellow-300 text-xl mb-2">Instagram</h4>
+                        <motion.a
+                          href="https://instagram.com/albysnack.id"
+                          target="_blank"
+                          className="text-pink-400 text-xl font-bold hover:text-pink-300 transition-colors"
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          @albysnack.id
+                        </motion.a>
+                      </div>
+                    </div>
+                  </div>
+                </GlassCard>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={isVisible.contact ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <GlassCard className="p-2 h-full">
+                  <iframe
+                    src={mapsLink}
+                    className="w-full h-full min-h-[400px] rounded-2xl"
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </GlassCard>
+              </motion.div>
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="py-6 text-center bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white text-sm rounded-t-xl shadow-lg animate-pulse">
-        © 2025 Alby Snack 🔥 Pedasnya bikin balik lagi! | IG: <a href="https://instagram.com/albysnack.id" className="underline">@albysnack.id</a>
+      {/* Footer */}
+      <footer className="relative z-20 py-12 text-center">
+        <GlassCard className="max-w-4xl mx-auto p-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h3 className="text-3xl font-black text-white mb-4">
+              🔥 ALBY SNACK 🔥
+            </h3>
+            <p className="text-gray-200 text-xl mb-6">
+              Pedasnya bikin balik lagi!
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 mb-6">
+              <motion.a
+                href={`https://wa.me/${phone}`}
+                target="_blank"
+                className="text-green-400 hover:text-green-300 transition-colors text-2xl"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+              >
+                💬 WhatsApp
+              </motion.a>
+              <motion.a
+                href="https://instagram.com/albysnack.id"
+                target="_blank"
+                className="text-pink-400 hover:text-pink-300 transition-colors text-2xl"
+                whileHover={{ scale: 1.1, rotate: -5 }}
+              >
+                📱 Instagram
+              </motion.a>
+            </div>
+            <p className="text-gray-300">
+              © 2025 Alby Snack - Made with ❤️ & 🌶️
+            </p>
+          </motion.div>
+        </GlassCard>
       </footer>
     </div>
   );
