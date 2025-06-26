@@ -45,19 +45,20 @@ const phone = "6281296023400";
 const mapsLink = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.193222126297!2d106.72738731100698!3d-6.215007893738111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f13670f79235%3A0x1a6cda36e850dcd3!2sQPMJ%2BV2%2C%20Joglo%2C%20Kembangan%2C%20West%20Jakarta%20City%2C%20Jakarta%20Capital%20Region!5e0!3m2!1sen!2sid!4v1716205510000!5m2!1sen!2sid";
 
 const testimonials = [
-  { name: "Andi W.", review: "Cimolnya enak banget, beneran nagih!", rating: 5, avatar: "👨" },
-  { name: "Rina M.", review: "Basreng pedesnya mantap, cocok buat temen kerja.", rating: 4, avatar: "👩" },
-  { name: "Yudha P.", review: "Harga murah rasa mewah. Repeat order terus!", rating: 5, avatar: "👨‍💼" },
-  { name: "Arie U.", review: "Cimol Keju nya enak bgt bikin nagih!", rating: 5, avatar: "👩‍💻" },
-  { name: "M igo", review: "Untuk sekelas gerobakan rasanya juara sih", rating: 5, avatar: "👨‍🎓" },
-  { name: "Alex", review: "Boleh untuk di coba, enak dan pedasnya pas", rating: 4, avatar: "👨‍🚀" }
+  { name: "Andi W.", review: "Cimolnya enak banget, beneran nagih!", rating: 5, avatar: "👨", sticker: "😍" },
+  { name: "Rina M.", review: "Basreng pedesnya mantap, cocok buat temen kerja.", rating: 4, avatar: "👩", sticker: "🔥" },
+  { name: "Yudha P.", review: "Harga murah rasa mewah. Repeat order terus!", rating: 5, avatar: "👨‍💼", sticker: "💯" },
+  { name: "Arie U.", review: "Cimol Keju nya enak bgt bikin nagih!", rating: 5, avatar: "👩‍💻", sticker: "🤤" },
+  { name: "M igo", review: "Untuk sekelas gerobakan rasanya juara sih", rating: 5, avatar: "👨‍🎓", sticker: "🏆" },
+  { name: "Alex", review: "Boleh untuk di coba, enak dan pedasnya pas", rating: 4, avatar: "👨‍🚀", sticker: "👌" }
 ];
 
 const FloatingElement = ({ children, delay = 0 }) => (
   <motion.div
     animate={{
       y: [0, -10, 0],
-      rotate: [0, 1, 0, -1, 0]
+      rotate: [0, 1, 0, -1, 0],
+      x: [0, 2, 0, -2, 0]
     }}
     transition={{
       duration: 4,
@@ -68,6 +69,17 @@ const FloatingElement = ({ children, delay = 0 }) => (
     {children}
   </motion.div>
 );
+
+// Add CSS for slow spin animation
+const slowSpinStyle = `
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+`;
 
 const GlassCard = ({ children, className = "" }) => (
   <div className={`backdrop-blur-xl bg-white/20 border border-white/30 rounded-3xl shadow-2xl ${className}`}>
@@ -126,6 +138,32 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900/90 via-pink-800/90 to-red-900/90 relative overflow-hidden">
+      {/* Add custom CSS */}
+      <style jsx>{`
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 8s linear infinite;
+        }
+        
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(-3deg); }
+          50% { transform: rotate(3deg); }
+        }
+        .animate-wiggle {
+          animation: wiggle 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce-x {
+          0%, 100% { transform: translateX(0px); }
+          50% { transform: translateX(4px); }
+        }
+        .animate-bounce-x {
+          animation: bounce-x 1s ease-in-out infinite;
+        }
+      `}</style>
       {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(255,107,107,0.3)_0%,transparent_50%)] animate-pulse"></div>
@@ -133,19 +171,129 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_80%,rgba(255,20,147,0.3)_0%,transparent_50%)] animate-pulse" style={{animationDelay: '2s'}}></div>
       </div>
 
-      {/* Floating Decorative Elements */}
-      <div className="fixed inset-0 z-10 pointer-events-none">
+      {/* Floating Decorative Elements & Stickers */}
+      <div className="fixed inset-0 z-10 pointer-events-none overflow-hidden">
+        {/* Cute Sun with googly eyes */}
         <FloatingElement delay={0}>
-          <div className="absolute top-20 left-20 text-6xl opacity-20">🌶️</div>
+          <div className="absolute top-16 left-16 transform rotate-12">
+            <div className="relative text-7xl">
+              <span className="absolute inset-0">☀️</span>
+              <div className="absolute top-4 left-4 flex gap-1">
+                <div className="w-3 h-3 bg-white rounded-full border-2 border-black flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-black rounded-full animate-bounce"></div>
+                </div>
+                <div className="w-3 h-3 bg-white rounded-full border-2 border-black flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-black rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </FloatingElement>
+
+        {/* Cute Flower with googly eyes */}
         <FloatingElement delay={1}>
-          <div className="absolute top-40 right-20 text-4xl opacity-20">🔥</div>
+          <div className="absolute top-32 right-20 transform -rotate-12">
+            <div className="relative text-6xl">
+              <span className="absolute inset-0">🌻</span>
+              <div className="absolute top-3 left-3 flex gap-1">
+                <div className="w-2.5 h-2.5 bg-white rounded-full border-2 border-black flex items-center justify-center">
+                  <div className="w-1 h-1 bg-black rounded-full animate-pulse"></div>
+                </div>
+                <div className="w-2.5 h-2.5 bg-white rounded-full border-2 border-black flex items-center justify-center">
+                  <div className="w-1 h-1 bg-black rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </FloatingElement>
+
+        {/* More cute stickers */}
         <FloatingElement delay={2}>
-          <div className="absolute bottom-40 left-40 text-5xl opacity-20">🍟</div>
+          <div className="absolute top-80 left-8 text-5xl opacity-80 animate-spin-slow">🌶️</div>
         </FloatingElement>
+        
         <FloatingElement delay={3}>
-          <div className="absolute bottom-20 right-40 text-4xl opacity-20">⭐</div>
+          <div className="absolute top-60 right-40 text-4xl opacity-70 transform rotate-45">🔥</div>
+        </FloatingElement>
+
+        <FloatingElement delay={4}>
+          <div className="absolute bottom-40 left-40 text-5xl opacity-60">🍟</div>
+        </FloatingElement>
+
+        <FloatingElement delay={5}>
+          <div className="absolute bottom-20 right-40 text-4xl opacity-80">⭐</div>
+        </FloatingElement>
+
+        {/* Additional fun stickers */}
+        <FloatingElement delay={6}>
+          <div className="absolute top-1/3 left-1/4 text-4xl opacity-50 transform -rotate-12">🎉</div>
+        </FloatingElement>
+
+        <FloatingElement delay={7}>
+          <div className="absolute top-2/3 right-1/4 text-3xl opacity-60 transform rotate-12">💫</div>
+        </FloatingElement>
+
+        <FloatingElement delay={8}>
+          <div className="absolute bottom-1/3 left-1/3 text-4xl opacity-70">🎯</div>
+        </FloatingElement>
+
+        {/* Cute speech bubbles */}
+        <FloatingElement delay={9}>
+          <div className="absolute top-1/2 left-12 bg-white/80 rounded-full px-4 py-2 text-sm font-bold text-red-600 transform -rotate-12 shadow-lg">
+            ENAK!
+          </div>
+        </FloatingElement>
+
+        <FloatingElement delay={10}>
+          <div className="absolute bottom-1/2 right-12 bg-yellow-300/80 rounded-full px-4 py-2 text-sm font-bold text-red-700 transform rotate-12 shadow-lg">
+            PEDAS!
+          </div>
+        </FloatingElement>
+
+        {/* More googly-eyed elements */}
+        <FloatingElement delay={11}>
+          <div className="absolute top-1/4 right-1/3 transform rotate-6">
+            <div className="relative text-5xl">
+              <span className="absolute inset-0">🌸</span>
+              <div className="absolute top-2 left-2 flex gap-0.5">
+                <div className="w-2 h-2 bg-white rounded-full border border-black flex items-center justify-center">
+                  <div className="w-0.5 h-0.5 bg-black rounded-full animate-bounce"></div>
+                </div>
+                <div className="w-2 h-2 bg-white rounded-full border border-black flex items-center justify-center">
+                  <div className="w-0.5 h-0.5 bg-black rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </FloatingElement>
+
+        <FloatingElement delay={12}>
+          <div className="absolute bottom-1/4 left-2/3 transform -rotate-6">
+            <div className="relative text-4xl">
+              <span className="absolute inset-0">🌺</span>
+              <div className="absolute top-1.5 left-1.5 flex gap-0.5">
+                <div className="w-1.5 h-1.5 bg-white rounded-full border border-black flex items-center justify-center">
+                  <div className="w-0.5 h-0.5 bg-black rounded-full animate-pulse"></div>
+                </div>
+                <div className="w-1.5 h-1.5 bg-white rounded-full border border-black flex items-center justify-center">
+                  <div className="w-0.5 h-0.5 bg-black rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </FloatingElement>
+
+        {/* Fun sticker badges */}
+        <FloatingElement delay={13}>
+          <div className="absolute top-3/4 left-20 bg-gradient-to-r from-pink-400 to-red-400 text-white px-3 py-1 rounded-full text-xs font-bold transform rotate-12 shadow-lg">
+            WOW! 😍
+          </div>
+        </FloatingElement>
+
+        <FloatingElement delay={14}>
+          <div className="absolute top-1/6 right-1/6 bg-gradient-to-r from-green-400 to-blue-400 text-white px-3 py-1 rounded-full text-xs font-bold transform -rotate-12 shadow-lg">
+            YUMMY! 😋
+          </div>
         </FloatingElement>
       </div>
 
@@ -212,7 +360,7 @@ export default function Home() {
               <GlassCard className="inline-block px-8 py-4 mb-6">
                 <div className="flex items-center gap-4 text-yellow-300">
                   <span className="text-3xl animate-bounce">🔥</span>
-                  <span className="text-2xl font-bold">PROMO SPESIAL LANGSUNG DIOUTLET!!!!!</span>
+                  <span className="text-2xl font-bold">PROMO SPESIAL HARI INI!</span>
                   <span className="text-3xl animate-bounce">🔥</span>
                 </div>
                 <p className="text-white text-lg mt-2">Beli 2 Cimol Gratis Makaroni</p>
@@ -305,13 +453,34 @@ export default function Home() {
                         )}
                       </div>
 
-                      {/* Image Placeholder with gradient overlay */}
+                      {/* Image Placeholder with gradient overlay and cute stickers */}
                       <div className="relative h-48 mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                         <div className="absolute inset-0 bg-black/10"></div>
-                        <span className="text-6xl filter drop-shadow-lg">
+                        
+                        {/* Main food emoji */}
+                        <span className="text-6xl filter drop-shadow-lg z-10">
                           {snack.name.includes('Cimol') ? '🥟' : 
                            snack.name.includes('Makaroni') ? '🍝' : '🥓'}
                         </span>
+                        
+                        {/* Cute stickers around the food */}
+                        <div className="absolute top-2 left-2 text-2xl animate-bounce">💫</div>
+                        <div className="absolute top-2 right-2 text-xl animate-pulse">✨</div>
+                        <div className="absolute bottom-2 left-2 text-lg animate-wiggle">🔥</div>
+                        <div className="absolute bottom-2 right-2 text-xl animate-bounce-x">❤️</div>
+                        
+                        {/* Cute googly eyes on some items */}
+                        {snack.name.includes('Cimol') && (
+                          <div className="absolute top-6 left-1/2 transform -translate-x-1/2 flex gap-1 z-20">
+                            <div className="w-3 h-3 bg-white rounded-full border-2 border-black flex items-center justify-center">
+                              <div className="w-1.5 h-1.5 bg-black rounded-full animate-bounce"></div>
+                            </div>
+                            <div className="w-3 h-3 bg-white rounded-full border-2 border-black flex items-center justify-center">
+                              <div className="w-1.5 h-1.5 bg-black rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                            </div>
+                          </div>
+                        )}
+                        
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                       </div>
 
@@ -372,7 +541,12 @@ export default function Home() {
                   transition={{ duration: 0.8, delay: idx * 0.1 }}
                   whileHover={{ y: -5, scale: 1.02 }}
                 >
-                  <GlassCard className="p-6 h-full">
+                  <GlassCard className="p-6 h-full relative">
+                    {/* Cute sticker on testimonial */}
+                    <div className="absolute -top-2 -right-2 text-2xl animate-bounce">
+                      {testimonial.sticker}
+                    </div>
+                    
                     <div className="flex items-center mb-4">
                       <span className="text-4xl mr-4">{testimonial.avatar}</span>
                       <div>
